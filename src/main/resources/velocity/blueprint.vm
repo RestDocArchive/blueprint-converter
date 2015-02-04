@@ -1,33 +1,79 @@
 #set( $H = '#' )
 
 #foreach($resource in ${rd.resources})
-$H #if (${resource.id}) ${resource.id} [${resource.path}]#else ${resource.path} #end
+$H #if (${resource.description}) ${resource.description} [${resource.path}]#else ${resource.path} #end
 
-$!{resource.description}
-
-Parameter:
-#foreach($param in ${resource.params.entrySet()})
-${param.key} - ${param.value.description} #if(${param.value.validations.size()} > 0)(#foreach($validation in ${param.value.validations})$validation#end)#end
-
-#end
 
 #foreach($method in ${resource.methods.entrySet()})
 $H$H #if (${method.value.description}) ${method.value.description} [$method.key]#else ${method.key} #end
 
-Header:
-#foreach($header in ${method.value.headers.entrySet()})
-${header.key} #if(${header.required}) (required)#end: ${header.description}
+#if(${resource.params.size()} > 0)
++ Parameters
+
+#foreach($param in ${resource.params.entrySet()})
+	+ ${param.key} (string) ... ${param.value.description} #if(${param.value.validations.size()} > 0), #foreach($validation in ${param.value.validations}) ${validation.type} ${validation.pattern} #end#end
 
 #end
+#end ##if params
 
-Body:
 #foreach($accept in ${method.value.accepts})
-- ${accept.schema} (${accept.type})
++ Request (${accept.type})
+
+#if(${method.value.headers.size()} > 0)
+	+ Headers
+
+#foreach($header in ${method.value.headers.entrySet()})
+			${header.key}: #if(${header.value.required}) (required)#end: $!{header.value.description}
+#end
+#end ##if headers
+
+	+ Body
+
+			$!{accept.schema} 
 
 #end
+
+#if(${method.value.statusCodes.size()} == 0)
++ Response 200 #if(${method.value.response.types.size()} > 0)(#foreach($resType in ${method.value.response.types})${resType.type} #end)#end
+
+
+#if(${method.value.response.headers.size()} > 0)
+	+ Headers
+
+#foreach($header in ${method.value.response.headers.entrySet()})
+			${header.key}: #if(${header.value.required}) (required)#end: $!{header.value.description}
+#end
+#end ##if headers
+
+	+ Body
+
+#if(${method.value.response.types.size()} > 0)
+#foreach($resType in ${method.value.response.types})
+			$!{resType.schema}
+#end
+#end
+
+#end ##end response
 
 #foreach($status in ${method.value.statusCodes.entrySet()})
 + Response ${status.key}
+
+#if(${method.value.response} && ${method.value.response.headers} && ${method.value.response.headers.size()} > 0)
+	+ Headers
+
+#foreach($header in ${method.value.response.headers.entrySet()})
+			${header.key}: #if(${header.value.required}) (required)#end: $!{header.value.description}
+#end
+#end ##if headers
+
+	+ Body
+
+#if(${method.value.response} && ${method.value.response.types} && ${method.value.response.types.size()} > 0)
+#foreach($resType in ${method.value.response.types})
+			$!{resType.schema}
+#end
+#end
+
 #end
 
 #end ##method

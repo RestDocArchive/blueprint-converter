@@ -31,11 +31,6 @@
 			<version>2.0</version>
 		</dependency>
 		<dependency>
-			<groupId>de.taimos</groupId>
-			<artifactId>httputils</artifactId>
-			<version>1.7</version>
-		</dependency>
-		<dependency>
 			<groupId>org.restdoc</groupId>
 			<artifactId>restdoc-api</artifactId>
 			<version>1.4</version>

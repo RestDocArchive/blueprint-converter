@@ -1,0 +1,157 @@
+{
+  "schemas": {
+    "http://some.json/msg": {
+      "type": "inline",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "headers": {
+    "request": {
+      "Authorization": {
+        "description": "This server uses a custom authentication scheme. See http://myapi.com/docs/auth",
+        "required": true
+      }
+    },
+    "response": {
+      "X-RateLimit-Total": {
+        "description": "The number of API calls allowed per-hour"
+      },
+      "X-RateLimit-Remaining": {
+        "description": "Number of requests remaining until next refill"
+      },
+      "X-RateLimit-Reset": {
+        "description": "The time at which X-RateLimit-Remaining will be reset back to X-RateLimit-Total"
+      }
+    }
+  },
+  "resources": [
+    {
+      "id": "LocalizedMessage",
+      "description": "A localized message",
+      "path": "/{locale}/{messageId}{?seasonal}",
+      "params": {
+        "locale": {
+          "description": "A standard locale string, e.g. \"en_US.utf-8\"",
+          "validations": [
+            {
+              "type": "match",
+              "pattern": "[a-z]+(_[A-Z]+)?(\\\\.[a-z-]+)?"
+            }
+          ]
+        },
+        "messageId": {
+          "description": "A free-form message string",
+          "validations": [
+            {
+              "type": "match",
+              "pattern": "[a-z_]+"
+            }
+          ]
+        },
+        "seasonal": {
+          "description": "Whether the message is seasonal.",
+          "validations": [
+            {
+              "type": "match",
+              "pattern": "^(true|false|yes|no)$"
+            }
+          ]
+        }
+      },
+      "methods": {
+        "PUT": {
+          "description": "Update or create a message",
+          "statusCodes": {
+            "201": "Created"
+          },
+          "accepts": [
+            {
+              "type": "text/plain"
+            },
+            {
+              "type": "application/json",
+              "schema": "http://some.json/msg"
+            }
+          ],
+          "headers": {
+            "X-User-Token": {
+              "description": "Used to identify the user creating the message"
+            }
+          },
+          "response": {
+            "types": [
+              {
+                "type": "text/plain"
+              },
+              {
+                "type": "application/json",
+                "schema": "http://some.json/msg"
+              }
+            ],
+            "headers": {
+              "Location": {
+                "description": "The URL of the created message"
+              }
+            }
+          },
+          "examples": [
+            {
+              "path": "/en_US/greeting",
+              "body": "Hello, world!"
+            },
+            {
+              "path": "/en_US/greeting",
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "body": "{\"id\":\"greeting\",\"content\":\"Hello, world!\"}!"
+            }
+          ]
+        },
+        "GET": {
+          "description": "Retrieve a message",
+          "statusCodes": {
+            "200": "Message retrieved successfully",
+            "404": "Message not found"
+          }
+        }
+      }
+    },
+    {
+      "id": "FallbackLocale",
+      "path": "/fallback/{locale}",
+      "params": {
+        "locale": {
+          "validations": [
+            {
+              "type": "match",
+              "pattern": "[a-z]+(_[A-Z]+)?(\\\\.[a-z-]+)?"
+            }
+          ]
+        }
+      },
+      "methods": {
+        "GET": {
+          "statusCodes": {
+            "200": "OK"
+          }
+        },
+        "PUT": {
+          "statusCodes": {
+            "201": "Created"
+          }
+        }
+      }
+    }
+  ]
+}
