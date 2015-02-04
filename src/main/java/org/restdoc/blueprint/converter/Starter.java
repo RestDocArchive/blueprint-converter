@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,9 +34,16 @@ import org.restdoc.api.util.RestDocParser;
  */
 public class Starter {
 	
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws IOException {
-		InputStream is = System.in;
-		if (args.length == 1) {
+		if (args.length != 2) {
+			System.out.println("Usage: blueprint-converter <input> <output>");
+			System.exit(1);
+		}
+		final InputStream is;
+		if (args[0].equals("-")) {
+			is = System.in;
+		} else {
 			is = new FileInputStream(new File(args[0]));
 		}
 		
@@ -60,16 +69,15 @@ public class Starter {
 		
 		Template template = Velocity.getTemplate("velocity/blueprint.vm", CharEncoding.UTF_8);
 		
-		// try (OutputStreamWriter out = new OutputStreamWriter(System.out, CharEncoding.UTF_8);) {
-		// template.merge(context, out);
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-		try (FileWriter out = new FileWriter("blueprint.md");) {
-			template.merge(context, out);
-		} catch (IOException e) {
-			e.printStackTrace();
+		final Writer wr;
+		if (args[1].equals("-")) {
+			wr = new OutputStreamWriter(System.out, CharEncoding.UTF_8);
+		} else {
+			wr = new FileWriter(args[1]);
 		}
+		
+		template.merge(context, wr);
+		wr.close();
 	}
 	
 	private static void cleanPaths(RestDoc doc) {
