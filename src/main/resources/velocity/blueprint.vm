@@ -1,0 +1,35 @@
+#set( $H = '#' )
+
+#foreach($resource in ${rd.resources})
+$H #if (${resource.id}) ${resource.id} [${resource.path}]#else ${resource.path} #end
+
+$!{resource.description}
+
+Parameter:
+#foreach($param in ${resource.params.entrySet()})
+${param.key} - ${param.value.description} #if(${param.value.validations.size()} > 0)(#foreach($validation in ${param.value.validations})$validation#end)#end
+
+#end
+
+#foreach($method in ${resource.methods.entrySet()})
+$H$H #if (${method.value.description}) ${method.value.description} [$method.key]#else ${method.key} #end
+
+Header:
+#foreach($header in ${method.value.headers.entrySet()})
+${header.key} #if(${header.required}) (required)#end: ${header.description}
+
+#end
+
+Body:
+#foreach($accept in ${method.value.accepts})
+- ${accept.schema} (${accept.type})
+
+#end
+
+#foreach($status in ${method.value.statusCodes.entrySet()})
++ Response ${status.key}
+#end
+
+#end ##method
+
+#end ##resource

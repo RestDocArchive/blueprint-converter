@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>de.taimos</groupId>
+		<artifactId>standalone-parent</artifactId>
+		<version>1-SNAPSHOT</version>
+	</parent>
+	<groupId>org.restdoc.blueprint</groupId>
+	<artifactId>blueprint-converter</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<name>RestDoc to Blueprint converter</name>
+	<properties>
+		<mainClass>org.restdoc.blueprint.converter.Starter</mainClass>
+	</properties>
+	<scm>
+		<connection>scm:git:git@github.com:taimos/velocity-cli.git</connection>
+		<developerConnection>scm:git:git@github.com:taimos/velocity-cli.git</developerConnection>
+		<url>scm:git:git@github.com:taimos/velocity-cli.git</url>
+		<tag>HEAD</tag>
+	</scm>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-tools</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.taimos</groupId>
+			<artifactId>httputils</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restdoc</groupId>
+			<artifactId>restdoc-api</artifactId>
+			<version>1.4</version>
+		</dependency>
+	</dependencies>
+</project>
