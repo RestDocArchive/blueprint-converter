@@ -101,7 +101,7 @@ public class Starter {
 		Template template = Velocity.getTemplate("velocity/blueprint.vm", CharEncoding.UTF_8);
 		
 		final Writer wr;
-		if (args[1].equals("-")) {
+		if (out.equals("-")) {
 			wr = new OutputStreamWriter(System.out, CharEncoding.UTF_8);
 		} else {
 			wr = new FileWriter(out);
