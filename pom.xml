@@ -14,10 +14,9 @@
 		<mainClass>org.restdoc.blueprint.converter.Starter</mainClass>
 	</properties>
 	<scm>
-		<connection>scm:git:git@github.com:taimos/velocity-cli.git</connection>
-		<developerConnection>scm:git:git@github.com:taimos/velocity-cli.git</developerConnection>
-		<url>scm:git:git@github.com:taimos/velocity-cli.git</url>
-		<tag>HEAD</tag>
+		<connection>scm:git:git@github.com:restdoc/blueprint-converter.git</connection>
+		<developerConnection>scm:git:git@github.com:restdoc/blueprint-converter.git</developerConnection>
+		<url>scm:git:git@github.com:restdoc/blueprint-converter.git</url>
 	</scm>
 	<build>
 		<plugins>
