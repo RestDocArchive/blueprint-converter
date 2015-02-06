@@ -1,6 +1,7 @@
 package org.restdoc.blueprint.converter;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -13,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.CharEncoding;
+import org.apache.http.HttpResponse;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -25,6 +27,8 @@ import org.restdoc.api.RestDoc;
 import org.restdoc.api.RestResource;
 import org.restdoc.api.util.RestDocParser;
 
+import de.taimos.httputils.WS;
+
 /**
  * Copyright 2014 Hoegernet<br>
  * <br>
@@ -36,13 +40,40 @@ public class Starter {
 	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws IOException {
-		if (args.length != 2) {
-			System.out.println("Usage: blueprint-converter <input> <output>");
+		final String in;
+		final String out;
+		
+		switch (args.length) {
+		case 0:
+			in = "-";
+			out = "-";
+			break;
+		case 1:
+			in = args[0];
+			out = "-";
+			break;
+		case 2:
+			in = args[0];
+			out = args[1];
+			break;
+		default:
+			System.out.println("Usage: blueprint-converter [<input> [<output>]]");
+			in = "";
+			out = "";
 			System.exit(1);
+			break;
 		}
+		
 		final InputStream is;
-		if (args[0].equals("-")) {
+		if (in.equals("-")) {
 			is = System.in;
+		} else if (in.startsWith("http")) {
+			try {
+				HttpResponse res = WS.url(in).options();
+				is = new ByteArrayInputStream(WS.getResponseAsBytes(res));
+			} catch (IllegalStateException e) {
+				throw new RuntimeException(e);
+			}
 		} else {
 			is = new FileInputStream(new File(args[0]));
 		}
@@ -73,7 +104,7 @@ public class Starter {
 		if (args[1].equals("-")) {
 			wr = new OutputStreamWriter(System.out, CharEncoding.UTF_8);
 		} else {
-			wr = new FileWriter(args[1]);
+			wr = new FileWriter(out);
 		}
 		
 		template.merge(context, wr);

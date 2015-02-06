@@ -19,7 +19,29 @@
 		<url>scm:git:git@github.com:taimos/velocity-cli.git</url>
 		<tag>HEAD</tag>
 	</scm>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>de.taimos</groupId>
+				<artifactId>daemon-maven-plugin</artifactId>
+				<version>0.1-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>standalone</id> <!-- this is used for inheritance merges -->
+						<goals>
+							<goal>standalone</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
+		<dependency>
+			<groupId>de.taimos</groupId>
+			<artifactId>httputils</artifactId>
+			<version>1.7</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
